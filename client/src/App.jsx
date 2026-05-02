@@ -1,7 +1,10 @@
+import AppRoute from "./routes/AppRoute"
 
 function App() {
   return (
-    <div>App</div>
+    <main className="w-full min-h-screen">
+      <AppRoute/>
+    </main>
   )
 }
 
