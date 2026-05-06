@@ -5,13 +5,10 @@ import { apiError } from "../utils/apiError.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 
-/**
- * @desc    Register new user
- * @route   POST /api/auth/register
- * @access  Public
- */
+
+// Registration
 export const registerUser = asyncHandler(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
   // console.log(req.body);
 
   const existingUser = await User.findOne({ email });
@@ -20,7 +17,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     return next (new apiError(409, "User already exists"));
   }
 
-  const user = await User.create({ name, email, password });
+  const user = await User.create({ name, email, password, role });
   // console.log("Registered user:", user);
 
 
@@ -39,11 +36,8 @@ export const registerUser = asyncHandler(async (req, res, next) => {
 });
 
 
-/**
- * @desc    Login user & return tokens
- * @route   POST /api/auth/login
- * @access  Public
- */
+
+// Login
 export const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   // console.log(req.body);
@@ -86,11 +80,8 @@ export const loginUser = asyncHandler(async (req, res, next) => {
 );
 });
 
-/**
- * @desc    Logout user
- * @route   POST /api/auth/logout
- * @access  Public
- */
+
+// Logout
 export const logoutUser = asyncHandler(async (req, res, next) => {
   res.clearCookie("refreshToken", {
     httpOnly: true,
@@ -104,16 +95,14 @@ export const logoutUser = asyncHandler(async (req, res, next) => {
   );
 });
 
-/**
- * @desc    Refresh access token
- * @route   POST /api/auth/refresh
- * @access  Public
- */
+
+
+// Refresh token
 export const refreshUserToken = asyncHandler(async (req, res, next) => {
   const token = req.cookies.refreshToken;
 
   if (!token) {
-    return next(apiError(401, "No token provided"));
+    return next(new apiError(401, "No token provided"));
   }
 
   const decoded = jwt.verify(token, process.env.REFRESH_SECRET);

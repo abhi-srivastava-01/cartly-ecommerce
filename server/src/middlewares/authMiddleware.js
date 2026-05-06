@@ -19,7 +19,7 @@ const isAuthenticatedUser = asyncHandler(async (req, res, next) => {
   }
 
   const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
-  console.log(decoded);
+  // console.log(decoded);
   
 
   const user = await User.findById(decoded.userId);

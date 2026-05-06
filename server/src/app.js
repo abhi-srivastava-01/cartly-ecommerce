@@ -25,12 +25,14 @@ app.use(express.static("uploads"));
 
 // Routes 
 import userRoutes from "./routes/authRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
 
 
 app.get('/', (req, res)=>{
     res.send("Hello Worls")
 })
 app.use("/api/auth", userRoutes);
+app.use("/api/products", productRoutes);
 
 
 // Global error handling middleware

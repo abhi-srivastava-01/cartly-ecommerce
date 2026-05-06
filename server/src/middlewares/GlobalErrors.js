@@ -9,13 +9,13 @@ const GlobalErrors = (err, req, res, next) => {
   // Handle Mongoose duplicate key errors
   if (err.code === 11000) {
     const message = `Duplicate field value entered for ${Object.keys(err.keyValue)}. Please use another value!`;
-    err = new apiError(message, 400);
+    err = new apiError(400, message);
   }
 
   // Handle Mongoose bad ObjectId errors
   if (err.name === "CastError") {
     const message = `Resource not found. Invalid ${err.path}: ${err.value}`;
-    err = new apiError(message, 404);
+    err = new apiError(404, message);
   }
 
 
