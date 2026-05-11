@@ -5,21 +5,30 @@ import { apiError } from "../utils/apiError.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 
-
 // Registration
 export const registerUser = asyncHandler(async (req, res, next) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password} = req.body;
   // console.log(req.body);
 
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
-    return next (new apiError(409, "User already exists"));
+    return next(new apiError(409, "User already exists"));
   }
 
   const user = await User.create({ name, email, password, role });
   // console.log("Registered user:", user);
 
+  // Token
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: process.env.MAX_AGE * 24 * 60 * 60 * 1000,
+  });
 
   const userData = {
     id: user._id,
@@ -30,12 +39,11 @@ export const registerUser = asyncHandler(async (req, res, next) => {
 
   return res.status(201).json(
     new sendResponse("User registered successfully", {
+      accessToken,
       user: userData,
     }),
   );
 });
-
-
 
 // Login
 export const loginUser = asyncHandler(async (req, res, next) => {
@@ -45,13 +53,13 @@ export const loginUser = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    return next (new apiError(401, "Invalid email and password"));
+    return next(new apiError(401, "Invalid email and password"));
   }
 
   const isMatch = await user.comparePassword(password);
 
   if (!isMatch) {
-    return next (new apiError(401, "Invalid email and password"));
+    return next(new apiError(401, "Invalid email and password"));
   }
 
   const accessToken = generateAccessToken(user);
@@ -64,7 +72,6 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     maxAge: process.env.MAX_AGE * 24 * 60 * 60 * 1000,
   });
 
-
   const userData = {
     id: user._id,
     name: user.name,
@@ -72,14 +79,13 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     role: user.role,
   };
 
-
   return res.status(200).json(
-  new sendResponse("Login successful", {
-    accessToken, user: userData
-  })
-);
+    new sendResponse("Login successful", {
+      accessToken,
+      user: userData,
+    }),
+  );
 });
-
 
 // Logout
 export const logoutUser = asyncHandler(async (req, res, next) => {
@@ -89,13 +95,8 @@ export const logoutUser = asyncHandler(async (req, res, next) => {
     secure: process.env.NODE_ENV === "production",
   });
 
-
-  return res.status(200).json(
-    new sendResponse("Logged out successfully")
-  );
+  return res.status(200).json(new sendResponse("Logged out successfully"));
 });
-
-
 
 // Refresh token
 export const refreshUserToken = asyncHandler(async (req, res, next) => {
@@ -116,7 +117,7 @@ export const refreshUserToken = asyncHandler(async (req, res, next) => {
     secure: process.env.NODE_ENV === "production",
   });
 
-  return res.status(200).json(
-    new sendResponse("Token refreshed", { accessToken: newAccessToken })
-  );
+  return res
+    .status(200)
+    .json(new sendResponse("Token refreshed", { accessToken: newAccessToken }));
 });
