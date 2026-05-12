@@ -3,7 +3,8 @@ import { Routes, Route } from "react-router-dom";
 // User
 import MainLayout from "../../layouts/MainLayout";
 import HomePage from "../../pages/public/HomePage";
-
+import CartPage from "../../pages/user/CartPage";
+import UserProfile from "../../pages/user/UserProfile";
 // Auth
 import Login from "../../auth/Login";
 import SignUp from "../../auth/SignUp";
@@ -12,6 +13,11 @@ import SignUp from "../../auth/SignUp";
 import AdminLayout from "../../layouts/AdminLayout";
 import AdminDashboard from "../../pages/admin/AdminDashboard";
 
+// Protect
+import { AdminProtectedRoute } from "./AdminProtectedRoute";
+import { UserProtectedRoute } from "./UserProtectedRoute";
+
+//
 function AppRoutes() {
   return (
     <>
@@ -19,6 +25,11 @@ function AppRoutes() {
         {/* Public */}
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} />
+          // Protect
+          <Route element={<UserProtectedRoute />}>
+          <Route path="me" element={<UserProfile/>}/>
+            <Route path="cart" element={<CartPage />} />
+          </Route>
         </Route>
 
         {/* Auth */}
@@ -26,7 +37,14 @@ function AppRoutes() {
         <Route path="/signup" element={<SignUp />} />
 
         {/* Admin */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute allowedRoles={["admin"]}>
+              <AdminLayout />
+            </AdminProtectedRoute>
+          }
+        >
           <Route path="dashboard" element={<AdminDashboard />} />
         </Route>
       </Routes>
