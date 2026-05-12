@@ -5,6 +5,7 @@ function SearchBar() {
     <div className="relative">
       <input
         type="text"
+        name="search"
         placeholder="Search products..."
         className="w-full pl-11 pr-4 py-2.5 
         bg-gray-100 border border-transparent 
