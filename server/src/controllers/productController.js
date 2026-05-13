@@ -8,7 +8,6 @@ import mongoose from "mongoose";
 export const createProduct = asyncHandler(async (req, res) => {
   const productData = { ...req.body };
   productData.user = req.user._id;
-  // console.log(req.user._id);
 
   const product = await Product.create(productData);
 
@@ -20,7 +19,6 @@ export const createProduct = asyncHandler(async (req, res) => {
 // Get all products
 export const getAllProducts = asyncHandler(async (req, res) => {
   const products = await Product.find().select("-createdAt -updatedAt -__v");
-  // console.log(products);
   return res
     .status(200)
     .json(new sendResponse("Products retrieved successfully", products));
@@ -29,7 +27,6 @@ export const getAllProducts = asyncHandler(async (req, res) => {
 // Get a single product by ID
 export const getSingleProduct = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  // console.log(id);
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return next(new apiError(400, "Invalid product id"));
@@ -38,7 +35,6 @@ export const getSingleProduct = asyncHandler(async (req, res, next) => {
     "-createdAt -updatedAt -__v",
   );
 
-  // console.log(product);
   if (!product) {
     return next(new apiError(404, "Product not found"));
   }
@@ -49,8 +45,7 @@ export const getSingleProduct = asyncHandler(async (req, res, next) => {
 
 // Update a product
 export const updateProduct = asyncHandler(async (req, res, next) => {
-  // const { id } = req.params;
-
+  const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return next(new apiError(400, "Invalid product id"));
   }
@@ -64,7 +59,6 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
   }
 
   if (updatedProduct.user.toString() !== req.user.id) {
-    // console.log(req.user.id);
     return next(new apiError(403, "You can update only your products"));
   }
 
@@ -80,7 +74,6 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
 // delete product
 export const deletePrdouct = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  // console.log(id);
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return next(new apiError(400, "Invalid product id"));

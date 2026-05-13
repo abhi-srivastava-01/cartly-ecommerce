@@ -21,7 +21,19 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
+    age: {
+      type: Number,
+    },
 
+    mobileNumber: {
+      type: String,
+    },
+
+    address: {
+      state: String,
+      city: String,
+      pincode: String,
+    },
     role: {
       type: String,
       enum: ["user", "seller", "admin"],
@@ -41,6 +53,10 @@ const userSchema = new mongoose.Schema(
 
 // Hash the password before saving the user
 userSchema.pre("save", async function () {
+  if (!this.isModified("password")) {
+    return;
+  }
+
   this.password = await bcrypt.hash(this.password, 10);
 });
 

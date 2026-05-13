@@ -12,14 +12,12 @@ const isAuthenticatedUser = asyncHandler(async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
   }
 
-  // console.log(token)
 
   if (!token) {
     return next (new apiError(401, "Login first"));
   }
 
   const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
-  // console.log(decoded);
   
 
   const user = await User.findById(decoded.userId);
@@ -28,11 +26,10 @@ const isAuthenticatedUser = asyncHandler(async (req, res, next) => {
     return next (new apiError(401, "User not found"));
   }
 
-  // console.log(user)
 
   req.user = user;
 
-  next();
+  return next();
 });
 
 

@@ -4,11 +4,11 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiError } from "../utils/apiError.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
+import mongoose from "mongoose";
 
 // Registration
 export const registerUser = asyncHandler(async (req, res, next) => {
-  const { name, email, password} = req.body;
-  // console.log(req.body);
+  const { name, email, password } = req.body;
 
   const existingUser = await User.findOne({ email });
 
@@ -16,8 +16,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     return next(new apiError(409, "User already exists"));
   }
 
-  const user = await User.create({ name, email, password, role });
-  // console.log("Registered user:", user);
+  const user = await User.create({ name, email, password});
 
   // Token
   const accessToken = generateAccessToken(user);
@@ -48,7 +47,6 @@ export const registerUser = asyncHandler(async (req, res, next) => {
 // Login
 export const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-  // console.log(req.body);
 
   const user = await User.findOne({ email }).select("+password");
 
@@ -107,9 +105,12 @@ export const refreshUserToken = asyncHandler(async (req, res, next) => {
   }
 
   const decoded = jwt.verify(token, process.env.REFRESH_SECRET);
-  // console.log("Decoded token:", decoded);
   const newAccessToken = generateAccessToken({ _id: decoded.userId });
   const newRefreshToken = generateRefreshToken({ _id: decoded.userId });
+
+  const user = await User.findById(decoded.userId).select(
+    "-password -createdAt -updatedAt -__v",
+  );
 
   res.cookie("refreshToken", newRefreshToken, {
     httpOnly: true,
@@ -119,5 +120,30 @@ export const refreshUserToken = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json(new sendResponse("Token refreshed", { accessToken: newAccessToken }));
+    .json(new sendResponse("Token refreshed", { accessToken: newAccessToken, user }));
+});
+
+// Update User
+export const updateUser = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id).select(
+    "-password -createdAt -updatedAt -__v",
+  );
+
+  if (!user) {
+    return next(new apiError(404, "User not found"));
+  }
+
+  if (user._id.toString() !== req.user.id.toString()) {
+    return next(new apiError(403, "You can update only your profile"));
+  }
+
+  Object.assign(user, req.body);
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new sendResponse("User updated successfully", user));
 });

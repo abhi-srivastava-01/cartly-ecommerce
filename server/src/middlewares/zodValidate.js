@@ -2,7 +2,6 @@
 
 const zodValidate = (schema) => (req, res, next) => {
   const parsed = schema.safeParse(req.body);
-  // console.log(parsed.success);
 
   if (!parsed.success) {
     return res.status(400).json({
