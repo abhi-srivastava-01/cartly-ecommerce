@@ -27,7 +27,7 @@ function AppRoutes() {
           <Route index element={<HomePage />} />
           // Protect
           <Route element={<UserProtectedRoute />}>
-          <Route path="me" element={<UserProfile/>}/>
+          <Route path="profile" element={<UserProfile/>}/>
             <Route path="cart" element={<CartPage />} />
           </Route>
         </Route>

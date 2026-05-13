@@ -3,6 +3,7 @@ import { ShoppingCart, User, UserRoundCog } from "lucide-react";
 import { IoNotificationsOutline } from "react-icons/io5";
 import SearchBar from "./SearchBar";
 import { useSelector } from "react-redux";
+import AccountMenu from "../ui/AccountMenu";
 
 function Navbar() {
   const { isAuthenticated } = useSelector((state) => state.user);
@@ -14,7 +15,7 @@ function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="text-xl font-semibold text-gray-800 tracking-tight"
+            className="text-xl font-semibold text-gray-800 tracking-tight select-none"
           >
             Cartly
           </Link>
@@ -27,7 +28,7 @@ function Navbar() {
           {/* Right Section */}
           <div className="flex items-center gap-4">
             {isAuthenticated && (
-              <button className="relative rounded-full hover:bg-gray-100 transition">
+              <button className="relative p-1 rounded-full hover:bg-gray-100 transition">
                 <IoNotificationsOutline className="w-5 h-5 text-gray-700" />
               </button>
             )}
@@ -54,12 +55,12 @@ function Navbar() {
                 Login
               </Link>
             ) : (
-              <Link
-                to="/me"
-                className="relative p-2 rounded-full hover:bg-gray-100 transition"
-              >
-                <UserRoundCog className="w-5 h-5 text-gray-700" />
-              </Link>
+              <div className="relative group flex items-center">
+                <button className="relative p-2 rounded-full hover:bg-gray-100 transition">
+                  <UserRoundCog className="w-5 h-5 text-gray-700" />
+                </button>
+                <AccountMenu />
+              </div>
             )}
           </div>
         </div>

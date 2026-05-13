@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, signupUser, refreshToken, logoutUser } from "./userThunk";
+import {
+  loginUser,
+  signupUser,
+  refreshToken,
+  logoutUser,
+  updateProfile,
+} from "./userThunk";
 
 const initialState = {
   user: null,
@@ -22,13 +28,6 @@ const clearAuthState = (state) => {
 const userSlice = createSlice({
   name: "user",
   initialState,
-
-  reducers: {
-    logout: (state) => {
-      clearAuthState(state);
-      state.isCheckingAuth = false;
-    },
-  },
 
   extraReducers: (builder) => {
     builder
@@ -71,42 +70,50 @@ const userSlice = createSlice({
         state.isAuthenticated = false;
       })
 
-      // Login
+      // Logout
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;
       })
-
       .addCase(logoutUser.fulfilled, (state) => {
         clearAuthState(state);
-        state.isCheckingAuth = false;
       })
-
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Regresh Token
+      // Update Profile
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.data;
+        state.error = null;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Refresh Token
       .addCase(refreshToken.pending, (state) => {
         state.loading = true;
         state.isCheckingAuth = true;
       })
-
       .addCase(refreshToken.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.data.user;
         state.accessToken = action.payload.data.accessToken;
         state.isAuthenticated = true;
         state.isCheckingAuth = false;
+        state.error = null;
       })
-
       .addCase(refreshToken.rejected, (state) => {
         clearAuthState(state);
-        state.isCheckingAuth = false;
       });
   },
 });
-
-export const { logout } = userSlice.actions;
 
 export default userSlice.reducer;

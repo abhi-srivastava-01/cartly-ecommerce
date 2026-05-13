@@ -52,6 +52,22 @@ export const logoutUser = createAsyncThunk(
   },
 );
 
+// Update Profile
+export const updateProfile = createAsyncThunk(
+  "user/updateProfile",
+  async ({ id, userData }, thunkAPI) => {
+    try {
+      const res = await axiosInstance.patch(`/auth/${id}`, userData);
+
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Try Again",
+      );
+    }
+  },
+);
+
 // Refresh Token
 export const refreshToken = createAsyncThunk(
   "user/refresh",
@@ -59,7 +75,6 @@ export const refreshToken = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await axiosInstance.get("/auth/refresh");
-
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(

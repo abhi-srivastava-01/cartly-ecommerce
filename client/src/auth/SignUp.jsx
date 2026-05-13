@@ -29,8 +29,6 @@ function Signup() {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
-
     dispatch(signupUser(data));
   };
 
