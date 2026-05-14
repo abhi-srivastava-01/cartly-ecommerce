@@ -9,7 +9,7 @@ function Navbar() {
   const { isAuthenticated } = useSelector((state) => state.user);
 
   return (
-    <nav className="w-full bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+    <nav className="relative z-999 w-full bg-white/80 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between py-3 gap-4">
           {/* Logo */}
