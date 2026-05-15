@@ -4,7 +4,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiError } from "../utils/apiError.js";
 import { sendResponse } from "../utils/sendResponse.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
-import mongoose from "mongoose";
+import {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+} from "../services/cloudinaryService.js";
 
 // Registration
 export const registerUser = asyncHandler(async (req, res, next) => {
@@ -16,7 +19,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     return next(new apiError(409, "User already exists"));
   }
 
-  const user = await User.create({ name, email, password});
+  const user = await User.create({ name, email, password });
 
   // Token
   const accessToken = generateAccessToken(user);
@@ -118,9 +121,12 @@ export const refreshUserToken = asyncHandler(async (req, res, next) => {
     secure: process.env.NODE_ENV === "production",
   });
 
-  return res
-    .status(200)
-    .json(new sendResponse("Token refreshed", { accessToken: newAccessToken, user }));
+  return res.status(200).json(
+    new sendResponse("Token refreshed", {
+      accessToken: newAccessToken,
+      user,
+    }),
+  );
 });
 
 // Update User
@@ -146,4 +152,71 @@ export const updateUser = asyncHandler(async (req, res, next) => {
   return res
     .status(200)
     .json(new sendResponse("User updated successfully", user));
+});
+
+// image uploadToCloudinary
+export const uploadAvatar = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id);
+
+  if (!user) {
+    return next(new apiError(404, "User not found"));
+  }
+
+  if (user._id.toString() !== req.user.id.toString()) {
+    return next(new apiError(403, "You can update only your profile"));
+  }
+
+  if (!req.file) {
+    return next(new apiError(400, "Image is required"));
+  }
+
+  // delete old image
+  if (user.avatar?.public_id) {
+    await deleteFromCloudinary(user.avatar.public_id);
+  }
+
+  const result = await uploadToCloudinary(req.file.buffer, "users");
+
+  user.avatar = {
+    url: result.secure_url,
+    public_id: result.public_id,
+  };
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new sendResponse("Profile image updated successfully", user.avatar));
+});
+
+
+// delete image 
+export const deleteAvatar = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id)
+
+  if (!user) {
+    return next(new apiError(404, "User not found"));
+  }
+
+  if (user._id.toString() !== req.user.id.toString()) {
+    return next(new apiError(403, "You can delete only your profile avatar"));
+  }
+
+  if (!user.avatar?.public_id) {
+    return next(new apiError(400, "Avatar not found"));
+  }
+
+  // delete from cloudinary
+  await deleteFromCloudinary(user.avatar.public_id);
+
+  // remove from database
+  user.avatar = undefined;
+
+  await user.save();
+
+  return res.status(200).json(new sendResponse("Avatar deleted successfully"));
 });

@@ -5,6 +5,8 @@ import {
   refreshUserToken,
   logoutUser,
   updateUser,
+  uploadAvatar,
+  deleteAvatar,
 } from "../controllers/authController.js";
 import { zodValidate } from "../middlewares/zodValidate.js";
 import {
@@ -13,6 +15,7 @@ import {
   updateUserValidationSchema,
 } from "../validations/zodValidationSchema.js";
 import { isAuthenticatedUser } from "../middlewares/authMiddleware.js";
+import upload from "../middlewares/uploadMiddleware.js";
 
 const router = Router();
 
@@ -57,5 +60,25 @@ router.post("/logout", isAuthenticatedUser, logoutUser);
  * @access  Public (but requires refresh token in cookie)
  */
 router.get("/refresh", refreshUserToken);
+
+/**
+ * @route   PATCH /api/auth/avatar/:id
+ * @desc    Upload or update user profile image
+ * @access  Private
+ * @body    form-data { image }
+ */
+router.patch(
+  "/avatar/:id",
+  isAuthenticatedUser,
+  upload.single("image"),
+  uploadAvatar,
+);
+
+/**
+ * @route   DELETE /api/auth/avatar/:id
+ * @desc    Delete user profile image
+ * @access  Private
+ */
+router.delete("/avatar/:id", isAuthenticatedUser, deleteAvatar);
 
 export default router;

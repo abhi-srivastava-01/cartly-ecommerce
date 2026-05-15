@@ -1,6 +1,4 @@
-import dotenv from "dotenv";
-dotenv.config();
-
+import "dotenv/config";
 
 // sync error handling
 process.on("uncaughtException", (err) => {
@@ -11,9 +9,8 @@ process.on("uncaughtException", (err) => {
 // async error handling
 process.on("unhandledRejection", (err) => {
   console.error("UNHANDLED REJECTION:", err);
-  server.close(() => process.exit(1))
+  server.close(() => process.exit(1));
 });
-
 
 import http from "http";
 import { app } from "./src/app.js";
@@ -21,7 +18,6 @@ import { connectDB } from "./src/config/db.js";
 
 let server;
 const PORT = process.env.PORT || 5000;
-
 
 // DB connection and server startup
 const startServer = async () => {

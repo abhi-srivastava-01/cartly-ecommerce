@@ -43,7 +43,6 @@ export const updateUserValidationSchema = z.object({
     .regex(/^[6-9]\d{9}$/, "Invalid Indian mobile number")
     .optional(),
   address: addressSchema.optional(),
-  avatar: z.string().url("Invalid avatar URL").optional(),
 });
 
 // Product Schema ------
