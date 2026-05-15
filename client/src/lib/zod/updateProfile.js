@@ -27,6 +27,4 @@ export const updateProfileSchema = z.object({
     .optional(),
 
   address: addressSchema.optional(),
-
-  avatar: z.string().url("Invalid avatar URL").optional(),
 });

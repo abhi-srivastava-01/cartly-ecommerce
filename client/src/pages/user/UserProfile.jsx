@@ -1,4 +1,3 @@
-import { Camera, User } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,12 +6,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { updateProfile } from "../../features/user/userThunk";
 import { updateProfileSchema } from "../../lib/zod/updateProfile";
 import { toast } from "react-toastify";
+import ProfileAvatar from "../../components/ui/ProfileAvatar";
 
 function ProfilePage() {
   const dispatch = useDispatch();
 
-  const { user, loading } = useSelector((state) => state.user);  
-  
+  const { user, loading } = useSelector((state) => state.user);
+
   const {
     register,
     handleSubmit,
@@ -39,6 +39,7 @@ function ProfilePage() {
     }
   }, [user, reset]);
 
+  // -----
   const onSubmit = async (data) => {
     try {
       const res = await dispatch(
@@ -64,30 +65,8 @@ function ProfilePage() {
         <div className="px-6 md:px-10 pb-10">
           {/* Profile Image */}
           <div className="flex flex-col items-center -mt-16">
-            <div className="relative">
-              <div className="w-32 h-32 rounded-full border-[6px] border-white bg-gray-100 flex items-center justify-center shadow-lg overflow-hidden">
-                {user?.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <User className="w-14 h-14 text-gray-400" />
-                )}
-              </div>
-
-              <button
-                type="button"
-                className="absolute bottom-1 right-1 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-black transition"
-              >
-                <Camera className="w-4 h-4" />
-              </button>
-            </div>
-
-            <h2 className="mt-4 text-2xl font-semibold text-gray-800 capitalize">
-              {user?.name ? `Hello ${user.name}` : ""}
-            </h2>
+              {/* Avatar */}
+              <ProfileAvatar user={user} />
           </div>
 
           {/* Form */}

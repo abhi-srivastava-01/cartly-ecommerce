@@ -4,8 +4,7 @@ import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store, persistor } from "./app/store/store.js";
-import { PersistGate } from "redux-persist/integration/react";
+import { store } from "./app/store/store.js";
 import { axiosInstance } from "./lib/axios/axiosInstance";
 import { setupInterceptors } from "./lib/axios/setupInterceptors .js";
 
@@ -15,11 +14,9 @@ setupInterceptors(store, axiosInstance);
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <App />
         </BrowserRouter>
-      </PersistGate>
     </Provider>
   </StrictMode>,
 );

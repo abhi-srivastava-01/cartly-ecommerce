@@ -83,3 +83,40 @@ export const refreshToken = createAsyncThunk(
     }
   },
 );
+
+// upload avatar
+export const uploadAvatar = createAsyncThunk(
+  "user/uploadAvatar",
+
+  async ({ id, userData }, thunkAPI) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/auth/avatar/${id}`,
+        userData,
+      );
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Avatar upload failed",
+      );
+    }
+  },
+);
+
+// delete avatar
+export const deleteAvatar = createAsyncThunk(
+  "user/deleteAvatar",
+
+  async (id, thunkAPI) => {
+    try {
+      const response = await axiosInstance.delete(`/auth/avatar/${id}`);
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Avatar delete failed",
+      );
+    }
+  },
+);

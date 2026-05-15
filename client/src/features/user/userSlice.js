@@ -5,6 +5,8 @@ import {
   refreshToken,
   logoutUser,
   updateProfile,
+  uploadAvatar,
+  deleteAvatar,
 } from "./userThunk";
 
 const initialState = {
@@ -112,6 +114,34 @@ const userSlice = createSlice({
       })
       .addCase(refreshToken.rejected, (state) => {
         clearAuthState(state);
+      })
+      
+      // upload image
+      .addCase(uploadAvatar.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadAvatar.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user.avatar = action.payload.data;
+      })
+      .addCase(uploadAvatar.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      //delete image
+      .addCase(deleteAvatar.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAvatar.fulfilled, (state) => {
+        state.loading = false;
+        state.user.avatar = null;
+      })
+      .addCase(deleteAvatar.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
