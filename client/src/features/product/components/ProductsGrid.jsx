@@ -1,7 +1,7 @@
 import ProductCard from "./ProductCard";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getProducts } from "../../features/product/productThunk";
+import { getProducts } from "../productThunk";
 function ProductsGrid() {
   const { products, loading, error } = useSelector((state) => state.product);
 

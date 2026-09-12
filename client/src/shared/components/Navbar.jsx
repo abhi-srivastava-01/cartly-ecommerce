@@ -3,7 +3,7 @@ import { ShoppingCart, User, UserRoundCog } from "lucide-react";
 import { IoNotificationsOutline } from "react-icons/io5";
 import SearchBar from "./SearchBar";
 import { useSelector } from "react-redux";
-import AccountMenu from "../ui/AccountMenu";
+import AccountMenu from "../../features/user/components/AccountMenu";
 
 function Navbar() {
   const { isAuthenticated } = useSelector((state) => state.user);

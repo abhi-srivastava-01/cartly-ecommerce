@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 
 import { toast } from "react-toastify";
 
-import { uploadAvatar, deleteAvatar } from "../../features/user/userThunk";
+import { uploadAvatar, deleteAvatar } from "../userThunk";
 
 function ProfileAvatar({ user }) {
   const dispatch = useDispatch();

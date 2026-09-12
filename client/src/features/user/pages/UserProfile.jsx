@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector, useDispatch } from "react-redux";
 
-import { updateProfile } from "../../features/user/userThunk";
-import { updateProfileSchema } from "../../lib/zod/updateProfile";
+import { updateProfile } from "../userThunk";
+import { updateProfileSchema } from "../validation/updateProfile";
 import { toast } from "react-toastify";
-import ProfileAvatar from "../../components/ui/ProfileAvatar";
+import ProfileAvatar from "../components/ProfileAvatar";
 
 function ProfilePage() {
   const dispatch = useDispatch();

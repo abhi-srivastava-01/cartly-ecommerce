@@ -1,4 +1,4 @@
-import ProductsGrid from "../../components/public/ProductsGrid";
+import ProductsGrid from "../components/ProductsGrid";
 
 function HomePage() {
   return (

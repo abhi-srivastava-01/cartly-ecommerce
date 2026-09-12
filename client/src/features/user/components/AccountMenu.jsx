@@ -1,8 +1,8 @@
 import { LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
-import { accountMenu } from "../../constants/accountMenu";
+import { accountMenu } from "../constants/accountMenu";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../../features/user/userThunk";
+import { logoutUser } from "../../user/userThunk";
 
 function AccountMenu() {
   const dispatch = useDispatch();

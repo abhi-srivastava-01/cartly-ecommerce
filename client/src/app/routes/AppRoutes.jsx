@@ -1,17 +1,17 @@
 import { Routes, Route } from "react-router-dom";
 
 // User
-import MainLayout from "../../layouts/MainLayout";
-import HomePage from "../../pages/public/HomePage";
-import CartPage from "../../pages/user/CartPage";
-import UserProfile from "../../pages/user/UserProfile";
+import MainLayout from "../layouts/MainLayout";
+import HomePage from "../../features/product/pages/HomePage";
+import CartPage from "../../features/user/pages/CartPage";
+import UserProfile from "../../features/user/pages/UserProfile";
 // Auth
-import Login from "../../auth/Login";
-import SignUp from "../../auth/SignUp";
+import Login from "../../features/auth/pages/Login";
+import SignUp from "../../features/auth/pages/SignUp";
 
 // Admin
-import AdminLayout from "../../layouts/AdminLayout";
-import AdminDashboard from "../../pages/admin/AdminDashboard";
+import AdminLayout from "../layouts/AdminLayout";
+import AdminDashboard from "../../features/admin/pages/AdminDashboard";
 
 // Protect
 import { AdminProtectedRoute } from "./AdminProtectedRoute";
@@ -25,9 +25,9 @@ function AppRoutes() {
         {/* Public */}
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} />
-          // Protect
+          {/* Protected user routes */}
           <Route element={<UserProtectedRoute />}>
-          <Route path="profile" element={<UserProfile/>}/>
+          <Route path="profile" element={<UserProfile />} />
             <Route path="cart" element={<CartPage />} />
           </Route>
         </Route>

@@ -5,13 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { signupSchema } from "../lib/zod/signupSchema";
-import { signupUser } from "../features/user/userThunk";
+import { loginSchema } from "../validation/loginSchema";
+import { loginUser } from "../../user/userThunk";
 
 // ----
-function Signup() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+function Login() {
+  const [show, setShow] = useState(false);
 
   const { user, isAuthenticated, loading, error } = useSelector(
     (state) => state.user,
@@ -25,11 +24,11 @@ function Signup() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = (data) => {
-    dispatch(signupUser(data));
+    dispatch(loginUser(data));
   };
 
   useEffect(() => {
@@ -57,30 +56,15 @@ function Signup() {
       <div className="w-full max-w-sm bg-white rounded-2xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
         {/* Heading */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800">
-            Create your account
-          </h2>
+          <h2 className="text-2xl font-semibold text-gray-800">Welcome back</h2>
 
-          <p className="text-gray-500 text-sm mt-1">Signup to start shopping</p>
+          <p className="text-gray-500 text-sm mt-1">
+            Login to continue shopping
+          </p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {/* Name */}
-          <div>
-            <input
-              type="text"
-              placeholder="Full name"
-              autoComplete="name"
-              {...register("name")}
-              className="w-full px-4 py-2.5 rounded-lg bg-gray-50 text-gray-700 outline-none focus:bg-white transition"
-            />
-
-            {errors.name && (
-              <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-            )}
-          </div>
-
           {/* Email */}
           <div>
             <input
@@ -101,49 +85,24 @@ function Signup() {
           {/* Password */}
           <div className="relative">
             <input
-              type={showPassword ? "text" : "password"}
+              type={show ? "text" : "password"}
               placeholder="Password"
-              autoComplete="new-password"
+              autoComplete="current-password"
               {...register("password")}
               className="w-full px-4 py-2.5 rounded-lg bg-gray-50 text-gray-700 outline-none focus:bg-white transition"
             />
 
             <button
               type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
+              onClick={() => setShow((prev) => !prev)}
               className="absolute right-3 top-3 text-gray-500"
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {show ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
 
             {errors.password && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          {/* Confirm Password */}
-          <div className="relative">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm password"
-              autoComplete="new-password"
-              {...register("confirmPassword")}
-              className="w-full px-4 py-2.5 rounded-lg bg-gray-50 text-gray-700 outline-none focus:bg-white transition"
-            />
-
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="absolute right-3 top-3 text-gray-500"
-            >
-              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.confirmPassword.message}
               </p>
             )}
           </div>
@@ -161,18 +120,18 @@ function Signup() {
             disabled={loading}
             className="w-full py-2.5 rounded-lg bg-gray-900 text-white hover:bg-gray-800 active:scale-[0.98] transition disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {loading ? "Creating account..." : "Create Account"}
+            {loading ? "Please wait..." : "Login"}
           </button>
         </form>
 
         {/* Footer */}
         <div className="text-center mt-6 text-sm text-gray-500">
-          Already have an account?{" "}
+          Don’t have an account?{" "}
           <Link
-            to="/login"
+            to="/signup"
             className="text-gray-900 font-medium hover:underline"
           >
-            Login
+            Sign up
           </Link>
         </div>
       </div>
@@ -180,4 +139,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Login;

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { axiosInstance } from "../../lib/axios/axiosInstance";
+import { axiosInstance } from "../../shared/lib/axios/axiosInstance";
 
 export const getProducts = createAsyncThunk(
   "products/getProducts",

@@ -1,4 +1,4 @@
-import { filterNavbarMenu } from "../../constants/filterNavbarMenu.js";
+import { filterNavbarMenu } from "../constants/filterNavbarMenu.js";
 
 function FilterNavbar({ activeCategory, setActiveCategory }) {
   return (

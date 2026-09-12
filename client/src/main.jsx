@@ -5,8 +5,8 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./app/store/store.js";
-import { axiosInstance } from "./lib/axios/axiosInstance";
-import { setupInterceptors } from "./lib/axios/setupInterceptors .js";
+import { axiosInstance } from "./shared/lib/axios/axiosInstance";
+import { setupInterceptors } from "./shared/lib/axios/setupInterceptors.js";
 
 //
 setupInterceptors(store, axiosInstance);
